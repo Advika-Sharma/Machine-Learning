@@ -64,3 +64,31 @@ print(a)
 a=np.ones(3)
 print(a)
 
+import pandas as pd
+
+df=pd.read_csv("finds.csv")
+
+df.head
+
+df.tail
+
+df.head(4)
+
+df.sample
+
+df.info()
+
+df.describe()
+
+df.columns
+
+df.Area
+
+df
+
+df['Price'].unique()
+
+df['Area'].unique()
+
+df['Area'].value_counts()
+

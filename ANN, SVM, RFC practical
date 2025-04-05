@@ -1,0 +1,107 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import confusion_matrix,accuracy_score,classification_report
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+data=pd.read_csv("IMDBNew.csv")
+print(data)
+
+"""
+drop Missing values
+"""
+print(data.dropna(axis=0,inplace=True))
+print(data.isnull().sum())
+
+
+"""
+Imputing Missing Values
+
+Revenue_mean=data["Revenue (Millions)"].mean()
+print(Revenue_mean)
+data["Revenue (Millions)"].fillna(Revenue_mean,inplace=True)
+print(data.isnull().sum())
+
+"""
+
+
+"""
+Preprocessing Data
+"""
+
+bins=(10,50,100)
+group_name=[0,1]
+data['Metascore']=pd.cut(data['Metascore'],bins=bins,labels=group_name)
+print(data['Metascore'].unique())
+
+movie_quality=LabelEncoder()
+data['Metascore']=movie_quality.fit_transform(data['Metascore'])
+
+print(data['Metascore'])
+
+print(data['Metascore'].value_counts())
+
+sns.countplot(data['Metascore'])
+
+"""
+Dividing the dataset
+"""
+
+X=data.drop('Metascore',axis=1)
+y=data['Metascore']
+
+"""
+Train and test Data
+"""
+
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42)
+
+"""
+Random Forest Classifier
+"""
+
+print("Confusion Matrix and Accuracy for Random Forest")
+
+rfc=RandomForestClassifier(n_estimators=200)
+rfc.fit(X_train,y_train)
+pred_rfc=rfc.predict(X_test)
+
+print(confusion_matrix(y_test,pred_rfc))
+
+accuracy=accuracy_score(y_test,pred_rfc)
+print(accuracy)
+
+"""
+Support Vector Machine
+"""
+
+print("Confusion Matrix and Accuracy for SVM")
+
+clf=svm.SVC()
+clf.fit(X_train,y_train)
+pred_clf=clf.predict(X_test)
+
+print(confusion_matrix(y_test,pred_clf))
+
+accuracy=accuracy_score(y_test,pred_clf)
+print(accuracy)
+
+"""
+Neural Network Classifier
+"""
+
+print("Confusion Matrix and Accuracy for Neural Network")
+
+nlpc=MLPClassifier(hidden_layer_sizes=(11,11,11),max_iter=500)
+nlpc.fit(X_train,y_train)
+pred_nlpc=nlpc.predict(X_test)
+
+print(confusion_matrix(y_test,pred_nlpc))
+
+accuracy=accuracy_score(y_test,pred_nlpc)
+print(accuracy)
